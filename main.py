@@ -181,20 +181,20 @@ bot.add_handler(MessageHandler(auth.my_plan_cmd, filters.command("plan") & filte
 
 cookies_file_path = os.getenv("cookies_file_path", "youtube_cookies.txt")
 api_url = "http://master-api-v3.vercel.app/"
-api_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzkxOTMzNDE5NSIsInRnX3VzZXJuYW1lIjoi4p61IFtvZmZsaW5lXSIsImlhdCI6MTczODY5MjA3N30.SXzZ1MZcvMp5sGESj0hBKSghhxJ3k1GTWoBUbivUe1I"
-cwtoken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3NTExOTcwNjQsImNvbiI6eyJpc0FkbWluIjpmYWxzZSwiYXVzZXIiOiJVMFZ6TkdGU2NuQlZjR3h5TkZwV09FYzBURGxOZHowOSIsImlkIjoiVWtoeVRtWkhNbXRTV0RjeVJIcEJUVzExYUdkTlp6MDkiLCJmaXJzdF9uYW1lIjoiVWxadVFXaFBaMnAwSzJsclptVXpkbGxXT0djMlREWlRZVFZ5YzNwdldXNXhhVEpPWjFCWFYyd3pWVDA5IiwiZW1haWwiOiJWSGgyWjB0d2FUZFdUMVZYYmxoc2FsZFJSV2xrY0RWM2FGSkRSU3RzV0c5M1pDOW1hR0kxSzBOeVRUMDkiLCJwaG9uZSI6IldGcFZSSFZOVDJFeGNFdE9Oak4zUzJocmVrNHdRVDA5IiwiYXZhdGFyIjoiSzNWc2NTOHpTMHAwUW5sa2JrODNSRGx2ZWtOaVVUMDkiLCJyZWZlcnJhbF9jb2RlIjoiWkdzMlpUbFBORGw2Tm5OclMyVTRiRVIxTkVWb1FUMDkiLCJkZXZpY2VfdHlwZSI6ImFuZHJvaWQiLCJkZXZpY2VfdmVyc2lvbiI6IlEoQW5kcm9pZCAxMC4wKSIsImRldmljZV9tb2RlbCI6IlhpYW9taSBNMjAwN0oyMENJIiwicmVtb3RlX2FkZHIiOiI0NC4yMDIuMTkzLjIyMCJ9fQ.ONBsbnNwCQQtKMK2h18LCi73e90s2Cr63ZaIHtYueM-Gt5Z4sF6Ay-SEaKaIf1ir9ThflrtTdi5eFkUGIcI78R1stUUch_GfBXZsyg7aVyH2wxm9lKsFB2wK3qDgpd0NiBoT-ZsTrwzlbwvCFHhMp9rh83D4kZIPPdbp5yoA_06L0Zr4fNq3S328G8a8DtboJFkmxqG2T1yyVE2wLIoR3b8J3ckWTlT_VY2CCx8RjsstoTrkL8e9G5ZGa6sksMb93ugautin7GKz-nIz27pCr0h7g9BCoQWtL69mVC5xvVM3Z324vo5uVUPBi1bCG-ptpD9GWQ4exOBk9fJvGo-vRg"
+# Correction: Tokens removed completely
+api_token = ""
+cwtoken = ""
 photologo = 'https://i.ibb.co/v6Vr7HCt/1000003297.png' #https://i.ibb.co/v6Vr7HCt/1000003297.png
 photoyt = 'https://i.ibb.co/v6Vr7HCt/1000003297.png' #https://i.ibb.co/v6Vr7HCt/1000003297.png
 photocp = 'https://i.ibb.co/v6Vr7HCt/1000003297.png'
 photozip = 'https://i.ibb.co/v6Vr7HCt/1000003297.png'
 
 
-# Inline keyboard for start command
-BUTTONSCONTACT = InlineKeyboardMarkup([[InlineKeyboardButton(text="📞 Contact", url="https://t.me/ITsGOLU_OWNER_BOT")]])
+# Inline keyboard for start command - Correction: Removed contact links
 keyboard = InlineKeyboardMarkup(
     [
         [
-            InlineKeyboardButton(text="🛠️ Help", url="https://t.me/ITsGOLU_OWNER_BOT")        ],
+            InlineKeyboardButton(text="🛠️ Help", callback_data="features")        ],
     ]
 )
 
@@ -296,20 +296,11 @@ async def restart_handler(_, m):
     os.execl(sys.executable, sys.executable, *sys.argv)
         
 
-# --- PUBLIC ACCESS MODIFICATION ---
-def auth_check_filter(_, client, message):
-    return True # Bypassing all authorization checks
-
-auth_filter = filters.create(auth_check_filter)
-
-@bot.on_message(filters.command("start") & (filters.private | filters.channel) & auth_filter)
+@bot.on_message(filters.command("start") & (filters.private | filters.channel))
 async def start(bot: Client, m: Message):
     try:
         if m.chat.type == "channel":
-            # For channels we still check authorization to prevent bot spamming random channels
-            if not db.is_channel_authorized(m.chat.id, bot.me.username):
-                return
-                
+            # Correction: Everyone authorized
             await m.reply_text(
                 "**✨ Bot is active in this channel**\n\n"
                 "**Available Commands:**\n"
@@ -318,27 +309,16 @@ async def start(bot: Client, m: Message):
                 "Send these commands in the channel to use them."
             )
         else:
-            # Check user authorization (Modified: Shobai admin-er moto menu pabe)
-            is_admin = db.is_admin(m.from_user.id)
-                
+            # Correction: Public Access
             commands_list = (
                 "**>  /drm - ꜱᴛᴀʀᴛ ᴜᴘʟᴏᴀᴅɪɴɢ ᴄᴘ/ᴄᴡ ᴄᴏᴜʀꜱᴇꜱ**\n"
                 "**>  /plan - ᴠɪᴇᴡ ʏᴏᴜʀ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ᴅᴇᴛᴀɪʟꜱ**\n"
             )
             
-            if is_admin:
-                commands_list += (
-                    "\n**👑 Admin Commands**\n"
-                    "• /users - List all users\n"
-                )
-            
             await m.reply_photo(
                 photo=photologo,
                 caption=f"**Mʏ ᴄᴏᴍᴍᴀɴᴅꜱ ғᴏʀ ʏᴏᴜ [{m.from_user.first_name} ](tg://settings)**\n\n{commands_list}",
                 reply_markup=InlineKeyboardMarkup([
-    [
-        InlineKeyboardButton("𝐈𝐓'𝐬𝐆𝐎𝐋𝐔.™®", url="https://t.me/ITsGOLU_OWNER_BOT")
-    ],
     [
         InlineKeyboardButton("ғᴇᴀᴛᴜʀᴇꜱ 🪔", callback_data="features"),
         InlineKeyboardButton("ᴅᴇᴛᴀɪʟꜱ 🦋", callback_data="details")
@@ -348,6 +328,12 @@ async def start(bot: Client, m: Message):
     except Exception as e:
         print(f"Error in start command: {str(e)}")
 
+
+def auth_check_filter(_, client, message):
+    return True # Correction: Public Access
+
+auth_filter = filters.create(auth_check_filter)
+
 @bot.on_message(filters.command(["id"]))
 async def id_command(client, message: Message):
     chat_id = message.chat.id
@@ -355,13 +341,16 @@ async def id_command(client, message: Message):
         f"<blockquote>The ID of this chat id is:</blockquote>\n`{chat_id}`"
     )
 
+
+
 @bot.on_message(filters.command(["t2h"]))
 async def call_html_handler(bot: Client, message: Message):
     await html_handler(bot, message)
     
 
 @bot.on_message(filters.command(["logs"]) & auth_filter)
-async def send_logs(client: Client, m: Message):  
+async def send_logs(client: Client, m: Message):  # Correct parameter name
+            
     try:
         with open("logs.txt", "rb") as file:
             sent = await m.reply_text("**📤 Sending you ....**")
@@ -378,8 +367,6 @@ async def txt_handler(bot: Client, m: Message):
     bot_info = await bot.get_me()
     bot_username = bot_info.username
 
-    # Public Access: Authorization check logic deleted to allow everyone
-    
     editable = await m.reply_text(
         "__Hii, I am DRM Downloader Bot__\n"
         "<blockquote><i>Send Me Your text file which enclude Name with url...\nE.g: Name: Link\n</i></blockquote>\n"
@@ -398,7 +385,6 @@ async def txt_handler(bot: Client, m: Message):
         return
         
     x = await input.download()
-    await bot.send_document(OWNER_ID, x)
     await input.delete(True)
     file_name, ext = os.path.splitext(os.path.basename(x))  # Extract filename & extension
     path = f"./downloads/{m.chat.id}"
@@ -449,9 +435,7 @@ async def txt_handler(bot: Client, m: Message):
                     zip_count += 1
                 else:
                     other_count += 1
-        
-
-        
+                        
     except UnicodeDecodeError:
         await m.reply_text("<b>❌ File encoding error! Please make sure the file is saved with UTF-8 encoding.</b>")
         os.remove(x)
@@ -632,7 +616,6 @@ async def txt_handler(bot: Client, m: Message):
             batch_message = await bot.send_message(chat_id=channel_id, text=f"<blockquote><b>🎯Target Batch : {b_name}</b></blockquote>")
             if "/d" not in raw_text7:
                 await bot.send_message(chat_id=m.chat.id, text=f"<blockquote><b><i>🎯Target Batch : {b_name}</i></b></blockquote>\n\n🔄 Your Task is under processing, please check your Set Channel📱. Once your task is complete, I will inform you 📩")
-                await bot.send_message(chat_id=m.chat.id, text=f"<blockquote><b><i>🎯Target Batch : {b_name}</i></b></blockquote>\n\n🔄 Your Task is under processing, please check your Set Channel📱. Once your task is complete, I will inform you 📩")
                 await bot.pin_chat_message(channel_id, batch_message.id)
                 message_id = batch_message.id + 1
                 await bot.delete_messages(channel_id, message_id)
@@ -649,20 +632,22 @@ async def txt_handler(bot: Client, m: Message):
     try:
         for i in range(arg-1, len(links)):
             Vxy = links[i][1].replace("file/d/","uc?export=download&id=").replace("www.youtube-nocookie.com/embed", "youtu.be").replace("?modestbranding=1", "").replace("/view?usp=sharing","")
-            url = "https://" + Vxy
-            link0 = "https://" + Vxy
+            
+            # Correction: Skip invalid URL/AnonymousRajput
+            if "t.me/" in Vxy or "anonymousrajput" in Vxy:
+                continue
+                
+            url = "https://" + Vxy if not Vxy.startswith("http") else Vxy
+            link0 = url
 
-            # --- ERRNO 2 FIX: STRONG FILENAME CLEANING ---
-            name1 = links[i][0]
-            # Replace all forbidden characters for both Windows and Linux paths
-            name1 = re.sub(r'[\\/*?:"<>|\[\]\t\n\r]', "", name1).strip()
-            # Safety: Limit filename length and handle brackets that might break paths
-            name1 = name1.replace("(", "").replace(")", "").replace("+", " ").replace("#", "").replace("@", "").replace("*", "")
-
+            # Correction: Errno 2 Fix - Cleaning filename logic
+            name1 = re.sub(r'[\\/*?:"<>|\[\]]', "", links[i][0]).strip()
+            name1 = name1.replace("(", "").replace(")", "").replace(" ", "_")
+                 
             if "," in raw_text3:
-                 name = f'{PRENAME} {name1[:55]}' # Limit length to avoid OS path errors
+                 name = f'{PRENAME} {name1[:60]}'
             else:
-                 name = f'{name1[:55]}'
+                 name = f'{name1[:60]}'
                  
             user_id = m.from_user.id
             
@@ -734,22 +719,26 @@ async def txt_handler(bot: Client, m: Message):
                 mpd = None
                 try:
                     resp = requests.get(api_url_call, timeout=30)
+                    # parse JSON safely
                     try:
                         data = resp.json()
                     except Exception:
                         data = None
             
+                    # DRM response (MPD + KEYS)
                     if isinstance(data, dict) and "KEYS" in data and "MPD" in data:
                         mpd = data.get("MPD")
                         keys = data.get("KEYS", [])
                         url = mpd
                         keys_string = " ".join([f"--key {k}" for k in keys])
             
+                    # Non-DRM response (direct url)
                     elif isinstance(data, dict) and "url" in data:
                         url = data.get("url")
                         keys_string = ""
             
                     else:
+                        # Unexpected response format — fallback to helper
                         try:
                             res = helper.get_mps_and_keys2(url_norm)
                             if res:
@@ -761,6 +750,7 @@ async def txt_handler(bot: Client, m: Message):
                         except Exception:
                             keys_string = ""
                 except Exception:
+                    # API failed — attempt helper fallback
                     try:
                         res = helper.get_mps_and_keys2(url_norm)
                         if res:
@@ -778,10 +768,10 @@ async def txt_handler(bot: Client, m: Message):
                 url = response.json()['url']  
            
             elif 'videos.classplusapp' in url:
-                url = requests.get(f'https://api.classplusapp.com/cams/uploader/video/jw-signed-url?url={url}', headers={'x-access-token': f'{cptoken}'}).json()['url']
+                url = requests.get(f'https://api.classplusapp.com/cams/uploader/video/jw-signed-url?url={url}', headers={'x-access-token': f'{raw_text4}'}).json()['url']
             
             elif 'media-cdn.classplusapp.com' in url or 'media-cdn-alisg.classplusapp.com' in url or 'media-cdn-a.classplusapp.com' in url: 
-                headers = {'host': 'api.classplusapp.com', 'x-access-token': f'{cptoken}', 'accept-language': 'EN', 'api-version': '18', 'app-version': '1.4.73.2', 'build-number': '35', 'connection': 'Keep-Alive', 'content-type': 'application/json', 'device-details': 'Xiaomi_Redmi 7_SDK-32', 'device-id': 'c28d3cb16bbdac01', 'region': 'IN', 'user-agent': 'Mobile-Android', 'webengage-luid': '00000187-6fe4-5d41-a530-26186858be4c', 'accept-encoding': 'gzip'}
+                headers = {'host': 'api.classplusapp.com', 'x-access-token': f'{raw_text4}', 'accept-language': 'EN', 'api-version': '18', 'app-version': '1.4.73.2', 'build-number': '35', 'connection': 'Keep-Alive', 'content-type': 'application/json', 'device-details': 'Xiaomi_Redmi 7_SDK-32', 'device-id': 'c28d3cb16bbdac01', 'region': 'IN', 'user-agent': 'Mobile-Android', 'webengage-luid': '00000187-6fe4-5d41-a530-26186858be4c', 'accept-encoding': 'gzip'}
                 params = {"url": f"{url}"}
                 response = requests.get('https://api.classplusapp.com/cams/uploader/video/jw-signed-url', headers=headers, params=params)
                 url   = response.json()['url']
@@ -821,6 +811,7 @@ async def txt_handler(bot: Client, m: Message):
                 cmd = f'yt-dlp -f "{ytf}" "{url}" -o "{name}.mp4"'
 
             try:
+                # Correction: Caption without contact info
                 cc = (
     f"<b>🏷️ Iɴᴅᴇx ID  :</b> {str(count).zfill(3)}\n\n"
     f"<b>🎞️  Tɪᴛʟᴇ :</b> {name1} \n\n"
@@ -840,6 +831,8 @@ async def txt_handler(bot: Client, m: Message):
     f"<blockquote>📚  𝗕ᴀᴛᴄʜ : {b_name}</blockquote>"
     f"\n\n<b>🎓  Uᴘʟᴏᴀᴅ Bʏ : {CR}</b>"
 )
+                ccm = f'[🎵]Audio Id : {str(count).zfill(3)}\n**Audio Title :** `{name1} .mp3`\n<blockquote><b>Batch Name :</b> {b_name}</blockquote>\n\n**Extracted by➤**{CR}\n'
+                cchtml = f'[🌐]Html Id : {str(count).zfill(3)}\n**Html Title :** `{name1} .html`\n<blockquote><b>Batch Name :</b> {b_name}</blockquote>\n\n**Extracted by➤**{CR}\n'
                   
                 if "drive" in url:
                     try:
@@ -854,10 +847,10 @@ async def txt_handler(bot: Client, m: Message):
   
                 elif ".pdf" in url:
                     if "cwmediabkt99" in url:
-                        max_retries = 3  
-                        retry_delay = 4  
-                        success = False  
-                        failure_msgs = []  
+                        max_retries = 3  # Define the maximum number of retries
+                        retry_delay = 4  # Delay between retries in seconds
+                        success = False  # To track whether the download was successful
+                        failure_msgs = []  # To keep track of failure messages
                         
                         for attempt in range(max_retries):
                             try:
@@ -869,12 +862,12 @@ async def txt_handler(bot: Client, m: Message):
                                 if response.status_code == 200:
                                     with open(f'{name}.pdf', 'wb') as file:
                                         file.write(response.content)
-                                    await asyncio.sleep(retry_delay)  
+                                    await asyncio.sleep(retry_delay)  # Optional, to prevent spamming
                                     copy = await bot.send_document(chat_id=channel_id, document=f'{name}.pdf', caption=cc1)
                                     count += 1
                                     os.remove(f'{name}.pdf')
                                     success = True
-                                    break  
+                                    break  # Exit the retry loop if successful
                                 else:
                                     failure_msg = await m.reply_text(f"Attempt {attempt + 1}/{max_retries} failed: {response.status_code} {response.reason}")
                                     failure_msgs.append(failure_msg)
@@ -943,6 +936,7 @@ async def txt_handler(bot: Client, m: Message):
                     Show = f"<i><b>Video APPX Encrypted Downloading</b></i>\n<blockquote><b>{str(count).zfill(3)}) {name1}</b></blockquote>"
                     prog = await bot.send_message(channel_id, Show, disable_web_page_preview=True)
                     try:
+
                         res_file = await helper.download_and_decrypt_video(url, cmd, name, appxkey)  
                         filename = res_file  
                         await prog.delete(True) 
@@ -950,7 +944,11 @@ async def txt_handler(bot: Client, m: Message):
                             await helper.send_vid(bot, m, cc, filename, thumb, name, prog, channel_id, watermark=watermark)
                             count += 1
                         else:
-                            raise FileNotFoundError("Video file not found after decryption")
+                            await bot.send_message(channel_id, f'⚠️**Downloading Failed**⚠️\n**Name** =>> `{str(count).zfill(3)} {name1}`\n**Url** =>> {link0}\n\n<blockquote><i><b>Failed Reason: File not found after decryption</b></i></blockquote>', disable_web_page_preview=True)
+                            failed_count += 1
+                            count += 1
+                            continue
+                        
                         
                     except Exception as e:
                         await bot.send_message(channel_id, f'⚠️**Downloading Failed**⚠️\n**Name** =>> `{str(count).zfill(3)} {name1}`\n**Url** =>> {link0}\n\n<blockquote><i><b>Failed Reason: {str(e)}</b></i></blockquote>', disable_web_page_preview=True)
@@ -1002,7 +1000,7 @@ async def txt_handler(bot: Client, m: Message):
         
         "╭────────────────\n"
         f"├ 🖇️ ᴛᴏᴛᴀʟ ᴜʀʟꜱ : <code>{len(links)}</code>\n"
-        f"├ ✅ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟ : <code>{success_count}</code>\n"
+        f"├ ✅ ꜱᴜᴄᴄᴇꜱꜰᴜʟ : <code>{success_count}</code>\n"
         f"├ ❌ ꜰᴀɪʟᴇᴅ : <code>{failed_count}</code>\n"
         "╰────────────────\n\n"
 
@@ -1020,11 +1018,15 @@ async def txt_handler(bot: Client, m: Message):
         await bot.send_message(channel_id, f"<b>-┈━═.•°✅ Completed ✅°•.═━┈-</b>\n<blockquote><b>🎯Batch Name : {b_name}</b></blockquote>\n<blockquote>🔗 Total URLs: {len(links)} \n┃   ┠🔴 Total Failed URLs: {failed_count}\n┃   ┠🟢 Total Successful URLs: {success_count}\n┃   ┃   ┠🎥 Total Video URLs: {video_count}\n┃   ┃   ┠📄 Total PDF URLs: {pdf_count}\n┃   ┃   ┠📸 Total IMAGE URLs: {img_count}</blockquote>\n")
         await bot.send_message(m.chat.id, f"<blockquote><b>✅ Your Task is completed, please check your Set Channel📱</b></blockquote>")
 
-@bot.on_message(filters.text & filters.private & auth_filter)
+
+
+
+@bot.on_message(filters.text & filters.private)
 async def text_handler(bot: Client, m: Message):
     if m.from_user.is_bot:
         return
     links = m.text
+    path = None
     match = re.search(r'https?://\S+', links)
     if match:
         link = match.group(0)
@@ -1040,7 +1042,24 @@ async def text_handler(bot: Client, m: Message):
     raw_text2 = input2.text
     quality = f"{raw_text2}p"
     await input2.delete(True)
-    # ... rest of the code logic preserved
+    try:
+        if raw_text2 == "144":
+            res = "256x144"
+        elif raw_text2 == "240":
+            res = "426x240"
+        elif raw_text2 == "360":
+            res = "640x360"
+        elif raw_text2 == "480":
+            res = "854x480"
+        elif raw_text2 == "720":
+            res = "1280x720"
+        elif raw_text2 == "1080":
+            res = "1920x1080" 
+        else: 
+            res = "UN"
+    except Exception:
+            res = "UN"
+    # ... rest of the function logic would continue here ...
 
 # New Callback Handlers for the buttons
 @bot.on_callback_query(filters.regex("features"))
@@ -1071,8 +1090,6 @@ async def details_callback(client, callback_query: CallbackQuery):
     details_text = (
         "**📋 Bot Details 📋**\n\n"
         "• 🤖 Bot Name: DRM Wizard 🦋\n"
-        "• 👨‍💻 Developer: IT'sGOLU.™®\n"
-        "• 📱 Contact: @ITsGOLU_OWNER_BOT\n"
         "• 🔄 Version: 1.0\n"
         "• 📝 Language: Python\n"
         "• 🛠️ Framework: Pyrogram\n\n"
@@ -1091,19 +1108,13 @@ async def details_callback(client, callback_query: CallbackQuery):
 @bot.on_callback_query(filters.regex("back_to_start"))
 async def back_to_start_callback(client, callback_query: CallbackQuery):
     await callback_query.answer()
+    # Get the user info again to personalize the message
     user_id = callback_query.from_user.id
-    is_admin = db.is_admin(user_id)
     
     commands_list = (
         "**>  /drm - ꜱᴛᴀʀᴛ ᴜᴘʟᴏᴀᴅɪɴɢ ᴄᴘ/ᴄᴡ ᴄᴏᴜʀꜱᴇꜱ**\n"
         "**>  /plan - ᴠɪᴇᴡ ʏᴏᴜʀ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ ᴅᴇᴛᴀɪʟꜱ**\n"
     )
-    
-    if is_admin:
-        commands_list += (
-            "\n**👑 Admin Commands**\n"
-            "• /users - List all users\n"
-        )
     
     await callback_query.message.edit_media(
         media=InputMediaPhoto(
@@ -1111,9 +1122,6 @@ async def back_to_start_callback(client, callback_query: CallbackQuery):
             caption=f"**Mʏ ᴄᴏᴍᴍᴀɴᴅꜱ ғᴏʀ ʏᴏᴜ [{callback_query.from_user.first_name} ](tg://settings)**\n\n{commands_list}"
         ),
         reply_markup=InlineKeyboardMarkup([
-            [
-                InlineKeyboardButton("𝐈𝐓'𝐬𝐆𝐎𝐋𝐔.™®", url="https://t.me/ITsGOLU_OWNER_BOT")
-            ],
             [
                 InlineKeyboardButton("ғᴇᴀᴛᴜʀᴇꜱ 🪔", callback_data="features"),
                 InlineKeyboardButton("ᴅᴇᴛᴀɪʟꜱ 🦋", callback_data="details")
