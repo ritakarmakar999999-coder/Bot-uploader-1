@@ -712,55 +712,56 @@ async def txt_handler(bot: Client, m: Message):
                 user_id = m.from_user.id
 
             elif any(x in url for x in ["https://cpvod.testbook.com/", "classplusapp.com/drm/", "media-cdn.classplusapp.com", "media-cdn-alisg.classplusapp.com", "media-cdn-a.classplusapp.com", "tencdn.classplusapp", "videos.classplusapp", "webvideos.classplusapp.com"]):
+                # Headers to fix 403 Forbidden for Classplus
+                cp_headers = '--add-header "Origin:https://web.classplusapp.com" --add-header "Referer:https://web.classplusapp.com/"'
+                
                 # normalize cpvod -> media-cdn path used by API
                 url_norm = url.replace("https://cpvod.testbook.com/", "https://media-cdn.classplusapp.com/drm/")
                 api_url_call = f"https://itsgolu-cp-api.vercel.app/itsgolu?url={url_norm}@ITSGOLU_OFFICIAL&user_id={user_id}"
                 keys_string = ""
                 mpd = None
+                
+                # Default cmd with headers
+                cmd = f'yt-dlp {cp_headers} -f "{ytf}" "{url}" -o "{name}.mp4"'
+                
                 try:
                     resp = requests.get(api_url_call, timeout=30)
-                    # parse JSON safely
                     try:
                         data = resp.json()
                     except Exception:
                         data = None
             
-                    # DRM response (MPD + KEYS)
                     if isinstance(data, dict) and "KEYS" in data and "MPD" in data:
                         mpd = data.get("MPD")
                         keys = data.get("KEYS", [])
                         url = mpd
                         keys_string = " ".join([f"--key {k}" for k in keys])
+                        cmd = f'yt-dlp {cp_headers} -f "{ytf}" "{url}" {keys_string} -o "{name}.mp4"'
             
-                    # Non-DRM response (direct url)
                     elif isinstance(data, dict) and "url" in data:
                         url = data.get("url")
-                        keys_string = ""
+                        cmd = f'yt-dlp {cp_headers} -f "{ytf}" "{url}" -o "{name}.mp4"'
             
                     else:
-                        # Unexpected response format — fallback to helper
                         try:
                             res = helper.get_mps_and_keys2(url_norm)
                             if res:
                                 mpd, keys = res
                                 url = mpd
                                 keys_string = " ".join([f"--key {k}" for k in keys])
-                            else:
-                                keys_string = ""
+                                cmd = f'yt-dlp {cp_headers} -f "{ytf}" "{url}" {keys_string} -o "{name}.mp4"'
                         except Exception:
-                            keys_string = ""
+                            pass
                 except Exception:
-                    # API failed — attempt helper fallback
                     try:
                         res = helper.get_mps_and_keys2(url_norm)
                         if res:
                             mpd, keys = res
                             url = mpd
                             keys_string = " ".join([f"--key {k}" for k in keys])
-                        else:
-                            keys_string = ""
+                            cmd = f'yt-dlp {cp_headers} -f "{ytf}" "{url}" {keys_string} -o "{name}.mp4"'
                     except Exception:
-                        keys_string = ""
+                        pass
             elif "tencdn.classplusapp" in url:
                 headers = {'host': 'api.classplusapp.com', 'x-access-token': f'{raw_text4}', 'accept-language': 'EN', 'api-version': '18', 'app-version': '1.4.73.2', 'build-number': '35', 'connection': 'Keep-Alive', 'content-type': 'application/json', 'device-details': 'Xiaomi_Redmi 7_SDK-32', 'device-id': 'c28d3cb16bbdac01', 'region': 'IN', 'user-agent': 'Mobile-Android', 'webengage-luid': '00000187-6fe4-5d41-a530-26186858be4c', 'accept-encoding': 'gzip'}
                 params = {"url": f"{url}"}
@@ -808,7 +809,9 @@ async def txt_handler(bot: Client, m: Message):
             elif "youtube.com" in url or "youtu.be" in url:
                 cmd = f'yt-dlp --cookies youtube_cookies.txt -f "{ytf}" "{url}" -o "{name}".mp4'
             else:
-                cmd = f'yt-dlp -f "{ytf}" "{url}" -o "{name}.mp4"'
+                # Fallback for normal links
+                if not any(x in url for x in ["classplusapp.com", "testbook.com"]):
+                    cmd = f'yt-dlp -f "{ytf}" "{url}" -o "{name}.mp4"'
 
             try:
                 # Correction: Caption without contact info
@@ -1059,7 +1062,6 @@ async def text_handler(bot: Client, m: Message):
             res = "UN"
     except Exception:
             res = "UN"
-    # ... rest of the function logic would continue here ...
 
 # New Callback Handlers for the buttons
 @bot.on_callback_query(filters.regex("features"))
