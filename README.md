@@ -1,5 +1,4 @@
 <p align="center">
-  <img src="https://i.ibb.co/v6Vr7HCt/1000003297.png" alt="DEV-TXT-LEECH">
 </p>
 <h1 align="center">
   <a href="https://github.com/VAiDH1661/ITsGOLU_UPLOADER">
@@ -52,7 +51,6 @@ Use these settings when adding a monitor:</b>
 <br>
 <br>
 <a href="https://render.com/deploy?repo=https://github.com/VAiDH1661/ITsGOLU_UPLOADER">
-<img src="https://render.com/images/deploy-to-render-button.svg" alt="Deploy to Render">
 </a>
 </details>
 
