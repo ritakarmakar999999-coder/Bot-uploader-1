@@ -543,7 +543,7 @@ async def txt_handler(bot: Client, m: Message):
     except asyncio.TimeoutError:
         raw_text = '1'
     
-    # Range support (e.g. 1-2) added here to fix ValueError
+    # 🔧 START FIX: Range & ValueError Handling
     try:
         if "-" in raw_text:
             start_val = int(raw_text.split("-")[0])
@@ -551,6 +551,7 @@ async def txt_handler(bot: Client, m: Message):
             start_val = int(raw_text)
     except ValueError:
         start_val = 1
+    # 🔧 END FIX
 
     if start_val > len(links) :
         await editable.edit(f"**🔹Enter number in range of Index (01-{len(links)})**")
@@ -725,6 +726,11 @@ async def txt_handler(bot: Client, m: Message):
             link0 = "https://" + Vxy
 
             name1 = links[i][0].replace("(", "[").replace(")", "]").replace("_", "").replace("\t", "").replace(":", "").replace("/", "").replace("+", "").replace("#", "").replace("|", "").replace("@", "").replace("*", "").replace(".", "").replace("https", "").replace("http", "").strip()
+            
+            # 🔧 START FIX: Clean File Name (Errno 2 Solution)
+            name1 = "".join([c for c in name1 if c.isalnum() or c in (' ', '-', '[', ']')]).strip()
+            # 🔧 END FIX
+
             if "," in raw_text3:
                  name = f'{PRENAME} {name1[:60]}'
             else:
